@@ -741,7 +741,7 @@ getgenv().enabled = state
 
 Tab:AddTextbox({
 	Name = "Message",
-	Default = "Tbao Hub On Top",
+	Default = "Venox I made For you",
 	TextDisappear = true,
 	Callback = function(text)
 	getgenv().chattext = text  
