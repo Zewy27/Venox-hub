@@ -1,0 +1,792 @@
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local Window = OrionLib:MakeWindow({IntroText = "By:Venox Hub",Name = "Venox | Blue lock rivals", HidePremium = false, SaveConfig = true, ConfigFolder = ""})
+
+
+Tab = Window:MakeTab({Name = "Info", Icon = "rbxassetid://15862513462",PremiumOnly = false })
+
+
+Tab:AddParagraph("By:Venox Hub","Discord: discord.gg/epgExpDd")
+
+
+
+
+Tab:AddButton({
+	Name = "Copy link discord",
+	Callback = function()
+setclipboard("discord.gg/epgExpDd")
+  	end    
+})
+
+
+
+Tab = Window:MakeTab({Name = "Main", Icon = "rbxassetid://15862513462",PremiumOnly = false })
+
+local Section = Tab:AddSection({
+	Name = "Pvp"
+})
+
+
+
+
+
+
+Tab:AddToggle({
+	Name = "Inf stamina",
+	Default = false,
+	Callback = function(value)
+getgenv().DecreaseStamina = value 
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local function decreaseStamina()
+    while getgenv().DecreaseStamina do
+        task.wait(0.5) 
+        local args = {
+            [1] = 0/0 
+        }
+        pcall(function()
+            ReplicatedStorage:WaitForChild("Packages")
+                :WaitForChild("Knit")
+                :WaitForChild("Services")
+                :WaitForChild("StaminaService")
+                :WaitForChild("RE")
+                :WaitForChild("DecreaseStamina")
+                :FireServer(unpack(args))
+        end)
+    end
+end
+task.spawn(decreaseStamina)
+task.spawn(function()
+    while task.wait() do
+        if not getgenv().DecreaseStamina then
+            break
+        end
+    end
+end)
+	end    
+})
+
+
+
+
+
+getgenv().autoTPBall = false 
+getgenv().teleportDelay = 0.1 
+
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+
+local LocalPlayer = Players.LocalPlayer
+
+
+local function teleportToBall()
+    if not LocalPlayer.Character or not LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then return end
+
+    
+    local ball = workspace:FindFirstChild("Football")
+    if ball and ball:FindFirstChild("BallAnims") and ball.BallAnims:FindFirstChild("BALL") then
+       
+        LocalPlayer.Character.HumanoidRootPart.CFrame = ball.BallAnims.BALL.CFrame + Vector3.new(0, 5, 0) -- Offset to avoid overlapping
+    end
+end
+
+
+task.spawn(function()
+    while task.wait(getgenv().teleportDelay) do
+        if getgenv().autoTPBall then
+            pcall(teleportToBall)
+        end
+    end
+end)
+
+
+
+Tab:AddToggle({
+	Name = "Grab ball",
+	Default = false,
+	Callback = function(value)
+		getgenv().autoTPBall = value 
+	end    
+})
+
+Tab:AddSlider({
+	Name = "Teleport delay",
+	Min = 0,
+	Max = 15,
+	Default = 1,
+	Color = Color3.fromRGB(255,255,255),
+	Increment = 1,
+	ValueName = "",
+	Callback = function(value)
+            getgenv().teleportDelay = value 
+	end    
+})
+
+Tab:AddButton({
+	Name = "Bring ball [Gui]",
+	Callback = function()
+getgenv().TeleportBall = false 
+getgenv().onoffgui = true 
+
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+
+
+local LocalPlayer = Players.LocalPlayer
+
+
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local ToggleButton = Instance.new("TextButton")
+local Title = Instance.new("TextLabel")
+local OnOffToggleButton = Instance.new("TextButton")
+
+
+ScreenGui.Name = "BallTeleportGUI"
+ScreenGui.Parent = game.CoreGui
+ScreenGui.ResetOnSpawn = false
+
+Frame.Name = "MainFrame"
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+Frame.BorderSizePixel = 2
+Frame.Position = UDim2.new(0.4, 0, 0.3, 0)
+Frame.Size = UDim2.new(0, 200, 0, 130)
+Frame.Active = true
+Frame.Draggable = true 
+
+Title.Name = "Title"
+Title.Parent = Frame
+Title.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Title.Size = UDim2.new(1, 0, 0.2, 0)
+Title.Font = Enum.Font.SourceSansBold
+Title.Text = "Bring ball"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 20
+
+ToggleButton.Name = "ToggleButton"
+ToggleButton.Parent = Frame
+ToggleButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+ToggleButton.Position = UDim2.new(0.1, 0, 0.3, 0)
+ToggleButton.Size = UDim2.new(0.8, 0, 0.25, 0)
+ToggleButton.Font = Enum.Font.SourceSansBold
+ToggleButton.Text = "Teleport: OFF"
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.TextSize = 18
+
+OnOffToggleButton.Name = "OnOffToggleButton"
+OnOffToggleButton.Parent = Frame
+OnOffToggleButton.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+OnOffToggleButton.Position = UDim2.new(0.1, 0, 0.6, 0)
+OnOffToggleButton.Size = UDim2.new(0.8, 0, 0.25, 0)
+OnOffToggleButton.Font = Enum.Font.SourceSansBold
+OnOffToggleButton.Text = "Delete gui"
+OnOffToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+OnOffToggleButton.TextSize = 18
+
+
+ToggleButton.MouseButton1Click:Connect(function()
+    getgenv().TeleportBall = not getgenv().TeleportBall
+    ToggleButton.Text = getgenv().TeleportBall and "Bring: ON" or "Bring: OFF"
+end)
+
+OnOffToggleButton.MouseButton1Click:Connect(function()
+    getgenv().onoffgui = not getgenv().onoffgui
+    Frame.Visible = getgenv().onoffgui
+    OnOffToggleButton.Text = getgenv().onoffgui and "Hide GUI" or "Show GUI"
+    OnOffToggleButton.BackgroundColor3 = getgenv().onoffgui and Color3.fromRGB(150, 0, 0) or Color3.fromRGB(0, 150, 0)
+end)
+
+
+function teleportToBall()
+    local ball = workspace:FindFirstChild("Football") or workspace:FindFirstChild("Ball")
+    if ball and ball:IsA("BasePart") then
+        LocalPlayer.Character.HumanoidRootPart.CFrame = ball.CFrame + Vector3.new(0, 3, 0) 
+    end
+end
+
+
+RunService.RenderStepped:Connect(function()
+    if getgenv().TeleportBall then
+        teleportToBall()
+    end
+end)
+  	end    
+})
+
+
+
+
+getgenv().Aimbotball = false 
+
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Camera = workspace.CurrentCamera
+
+
+local LocalPlayer = Players.LocalPlayer
+
+
+function lookAt(target, eye)
+    Camera.CFrame = CFrame.new(target, eye)
+end
+
+
+function getClosestPlayerToCursor(targetPart)
+    local nearestPlayer = nil
+    local shortestDistance = math.huge
+
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild(targetPart) then
+            local part = player.Character[targetPart]
+            local screenPos, onScreen = Camera:WorldToViewportPoint(part.Position)
+
+            if onScreen then
+                local mousePos = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+                local distance = (Vector2.new(screenPos.X, screenPos.Y) - mousePos).Magnitude
+                if distance < shortestDistance and distance < 400 then
+                    shortestDistance = distance
+                    nearestPlayer = player
+                end
+            end
+        end
+    end
+
+    return nearestPlayer
+end
+
+
+function getBall()
+    local ball = workspace:FindFirstChild("Football") or workspace:FindFirstChild("Ball")
+    if ball then
+        return ball
+    end
+    return nil
+end
+
+
+RunService.RenderStepped:Connect(function()
+
+    if getgenv().Aimbot then
+        local closestPlayer = getClosestPlayerToCursor("HumanoidRootPart")
+        if closestPlayer and closestPlayer.Character and closestPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            local targetPos = closestPlayer.Character.HumanoidRootPart.Position
+            lookAt(Camera.CFrame.Position, targetPos)
+        end
+    end
+
+    
+    if getgenv().Aimbotball then
+        local ball = getBall()
+        if ball and ball:IsA("BasePart") then
+            local ballPos = ball.Position
+            lookAt(Camera.CFrame.Position, ballPos)
+        end
+    end
+end)
+
+
+
+Tab:AddToggle({
+	Name = "Aimlock ball",
+	Default = false,
+	Callback = function(value)
+getgenv().Aimbotball = value 
+	end    
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Tab = Window:MakeTab({Name = "Player", Icon = "rbxassetid://15862513462",PremiumOnly = false })
+
+
+local Players = game:GetService("Players")
+local function isNumber(str)
+  if tonumber(str) ~= nil or str == 'inf' then
+    return true
+  end
+end
+
+getgenv().TPSpeed = 3
+getgenv().TPWalk = false
+
+
+Tab:AddToggle({
+	Name = "CFrame speed",
+	Default = false,
+	Callback = function(s)
+getgenv().TPWalk = s
+local hb = game:GetService("RunService").Heartbeat
+local player = game:GetService("Players")
+local lplr = player.LocalPlayer
+local chr = lplr.Character
+local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
+while getgenv().TPWalk and hb:Wait() and chr and hum and hum.Parent do
+  if hum.MoveDirection.Magnitude > 0 then
+    if getgenv().TPSpeed and isNumber(getgenv().TPSpeed) then
+      chr:TranslateBy(hum.MoveDirection * tonumber(getgenv().TPSpeed))
+    else
+      chr:TranslateBy(hum.MoveDirection)
+    end
+  end
+end
+	end    
+})
+
+
+
+
+
+
+
+
+
+
+
+Tab:AddSlider({
+	Name = "Speed value",
+	Min = 1,
+	Max = 20,
+	Default = 2,
+	Color = Color3.fromRGB(255,255,255),
+	Increment = 1,
+	ValueName = "",
+	Callback = function(value)
+            getgenv().TPSpeed = value
+	end    
+})
+
+
+
+
+
+
+local isJumpPowerEnabled = false
+
+
+
+
+Tab:AddToggle({
+	Name = "Jump",
+	Default = false,
+	Callback = function(enabled)
+isJumpPowerEnabled = enabled
+	end    
+})
+
+
+local jumpMethods = {"CFrame"}
+local selectedJumpMethod = jumpMethods[1]
+
+
+
+
+
+Tab:AddSlider({
+	Name = "Jump value",
+	Min = 9,
+	Max = 500,
+	Default = 40,
+	Color = Color3.fromRGB(255,255,255),
+	Increment = 1,
+	ValueName = "",
+	Callback = function(value)
+local player = game:GetService("Players").LocalPlayer
+    local humanoid = player.Character:WaitForChild("Humanoid")
+    humanoid.UseJumpPower = true
+    humanoid.Jumping:Connect(function(isActive)
+        if isJumpPowerEnabled and isActive then
+            local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+            if rootPart then
+                if selectedJumpMethod == "Velocity" then
+                    rootPart.Velocity = rootPart.Velocity * Vector3.new(1, 0, 1) + Vector3.new(0, value, 0)
+                elseif selectedJumpMethod == "Vector" then
+                    rootPart.Velocity = Vector3.new(0, value, 0)
+                elseif selectedJumpMethod == "CFrame" then
+                    player.Character:SetPrimaryPartCFrame(player.Character:GetPrimaryPartCFrame() + Vector3.new(0, value, 0))
+                end
+            end
+        end
+    end)
+	end    
+})
+
+
+
+
+
+
+
+
+
+
+
+local IJ = false
+Tab:AddToggle({
+	Name = "Inf jump",
+	Default = false,
+	Callback = function(state)
+		IJ = state
+      game:GetService("UserInputService").JumpRequest:Connect(function()
+          if IJ then
+              game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):ChangeState("Jumping")
+          end
+      end)
+	end    
+})
+
+Tab:AddToggle({
+	Name = "No clip",
+	Default = false,
+	Callback = function(Value)
+		getgenv().NoclipEnabled = Value 
+        local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local function noclip()
+    local player = Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    for _, part in pairs(character:GetDescendants()) do
+        if part:IsA("BasePart") and part.CanCollide == true then
+            part.CanCollide = false
+        end
+    end
+end
+local function noclipLoop()
+    RunService.Stepped:Connect(function()
+        if getgenv().NoclipEnabled then
+            noclip()
+        end
+    end)
+end
+noclipLoop()
+	end    
+})
+
+
+
+
+
+Tab = Window:MakeTab({Name = "Esp", Icon = "rbxassetid://15862513462",PremiumOnly = false })
+
+local Section = Tab:AddSection({
+	Name = "Esp player"
+})
+
+		local ESP = loadstring(game:HttpGet("https://kiriot22.com/releases/ESP.lua"))()
+ESP:Toggle(true)
+ESP.Players = false
+ESP.Tracers = false
+ESP.Boxes = false
+ESP.Names = false
+
+
+Tab:AddToggle({
+	Name = "Esp enable",
+	Default = false,
+	Callback = function(Value)
+		ESP.Players = Value
+	end    
+})
+		
+		
+Tab:AddToggle({
+	Name = "Esp name",
+	Default = false,
+	Callback = function(Value)
+		ESP.Names = Value
+	end    
+})		
+		
+Tab:AddToggle({
+	Name = "Esp box",
+	Default = false,
+	Callback = function(Value)
+		ESP.Boxes = Value
+	end    
+})
+		
+Tab:AddToggle({
+	Name = "Esp tracer",
+	Default = false,
+	Callback = function(Value)
+		ESP.Tracers = Value
+	end    
+})
+		
+		
+		local Section = Tab:AddSection({
+	Name = "Esp ball"
+})
+
+
+getgenv().espEnabled = false 
+getgenv().tracerColor = Color3.fromRGB(0, 0, 255) 
+
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+
+
+local LocalPlayer = Players.LocalPlayer
+
+local function createESP(ball)
+    if ball:FindFirstChild("ESP") then return end 
+
+    
+    local billboard = Instance.new("BillboardGui", ball)
+    billboard.Name = "ESP"
+    billboard.Size = UDim2.new(4, 0, 4, 0)
+    billboard.Adornee = ball
+    billboard.AlwaysOnTop = false 
+
+    
+    local frame = Instance.new("Frame", billboard)
+    frame.Size = UDim2.new(1, 0, 1, 0)
+    frame.BackgroundColor3 = getgenv().tracerColor
+    frame.BackgroundTransparency = 0.5
+    frame.BorderSizePixel = 0
+end
+
+
+local tracerLine = Drawing.new("Line")
+tracerLine.Color = getgenv().tracerColor
+tracerLine.Thickness = 2
+tracerLine.Transparency = 1
+
+local function updateTracer(ball)
+    RunService.RenderStepped:Connect(function()
+        if getgenv().espEnabled and ball and ball:IsDescendantOf(Workspace) and LocalPlayer.Character then
+            local ballPosition = ball.Position
+            local characterRoot = LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+
+            if characterRoot then
+                local rootPosition = characterRoot.Position
+
+              
+                local screenPosBall = Workspace.CurrentCamera:WorldToViewportPoint(ballPosition)
+                local screenPosPlayer = Workspace.CurrentCamera:WorldToViewportPoint(rootPosition)
+
+                tracerLine.From = Vector2.new(screenPosPlayer.X, screenPosPlayer.Y)
+                tracerLine.To = Vector2.new(screenPosBall.X, screenPosBall.Y)
+                tracerLine.Visible = true
+            end
+        else
+            tracerLine.Visible = false
+        end
+    end)
+end
+
+
+task.spawn(function()
+    while task.wait(0.1) do
+        pcall(function()
+            local ball = Workspace:FindFirstChild("Football") and Workspace.Football:FindFirstChild("BallAnims") and Workspace.Football.BallAnims:FindFirstChild("BALL")
+
+            if ball then
+                createESP(ball) 
+                updateTracer(ball) 
+            end
+        end)
+    end
+end)
+		
+		Tab:AddToggle({
+	Name = "Esp tracer",
+	Default = false,
+	Callback = function(value)
+		getgenv().espEnabled = value 
+	end    
+})
+		
+	Tab:AddColorpicker({
+	Name = "Color",
+	Default = Color3.fromRGB(0, 0, 255),
+	Callback = function(value)
+	getgenv().tracerColor = value	
+	end	  
+})
+
+
+
+
+
+getgenv().Espdistance = false 
+getgenv().Espcolor = Color3.fromRGB(0, 0, 255) 
+
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+
+local function createESP(ball)
+    if ball and not ball:FindFirstChild("BallESP") then
+        local billboardGui = Instance.new("BillboardGui")
+        billboardGui.Name = "BallESP"
+        billboardGui.Adornee = ball
+        billboardGui.Size = UDim2.new(2, 0, 2, 0)
+        billboardGui.AlwaysOnTop = true
+
+        local distanceLabel = Instance.new("TextLabel")
+        distanceLabel.Name = "DistanceLabel"
+        distanceLabel.Parent = billboardGui
+        distanceLabel.Size = UDim2.new(1, 0, 1, 0)
+        distanceLabel.BackgroundTransparency = 1
+        distanceLabel.TextColor3 = getgenv().Espcolor
+        distanceLabel.Font = Enum.Font.SourceSansBold
+        distanceLabel.TextSize = 20
+        distanceLabel.TextStrokeTransparency = 0.5
+        distanceLabel.Text = "Distance: --"
+
+        billboardGui.Parent = ball
+    end
+end
+
+
+local function updateESP()
+    if getgenv().Espdistance then
+        local ball = workspace.Football:FindFirstChild("BALL") or workspace:FindFirstChild("Football") or workspace:FindFirstChild("Ball")
+        if ball and ball:IsA("BasePart") then
+            createESP(ball)
+            local esp = ball:FindFirstChild("BallESP")
+            if esp and esp:FindFirstChild("DistanceLabel") then
+                local distanceLabel = esp.DistanceLabel
+                local distance = (LocalPlayer.Character.HumanoidRootPart.Position - ball.Position).Magnitude
+                distanceLabel.Text = string.format("Distance: %.1f", distance)
+            end
+        end
+    else
+
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if obj:IsA("BillboardGui") and obj.Name == "BallESP" then
+                obj:Destroy()
+            end
+        end
+    end
+end
+
+
+RunService.RenderStepped:Connect(function()
+    pcall(function()
+        updateESP()
+    end)
+end)
+
+
+
+Tab:AddToggle({
+	Name = "Esp distance",
+	Default = false,
+	Callback = function(value)
+		getgenv().Espdistance = value 
+	end    
+})
+		
+	Tab:AddColorpicker({
+	Name = "Color",
+	Default = Color3.fromRGB(0, 0, 255),
+	Callback = function(value)
+getgenv().Espcolor = value 
+	end	  
+})
+
+
+Tab = Window:MakeTab({Name = "Misc", Icon = "rbxassetid://15862513462",PremiumOnly = false })
+
+
+local Section = Tab:AddSection({
+	Name = "Chat"
+})
+
+
+
+
+Tab:AddToggle({
+	Name = "Spam chat",
+	Default = false,
+	Callback = function(state)
+getgenv().enabled = state  
+    if getgenv().enabled then
+        while getgenv().enabled do
+            game.ReplicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer(getgenv().chattext, "All")
+            wait(1) 
+        end
+    end
+	end    
+})
+
+Tab:AddTextbox({
+	Name = "Message",
+	Default = "Tbao Hub On Top",
+	TextDisappear = true,
+	Callback = function(text)
+	getgenv().chattext = text  
+	end	  
+})
+
+local Section = Tab:AddSection({
+	Name = "Server"
+})
+
+
+
+
+
+Tab:AddButton({
+	Name = "Server hop",
+	Callback = function()
+local Http = game:GetService("HttpService")
+local TPS = game:GetService("TeleportService")
+local Api = "https://games.roblox.com/v1/games/"
+local _place = game.PlaceId
+local _servers = Api.._place.."/servers/Public?sortOrder=Asc&limit=100"
+function ListServers(cursor)
+   local Raw = game:HttpGet(_servers .. ((cursor and "&cursor="..cursor) or ""))
+   return Http:JSONDecode(Raw)
+end
+local Server, Next; repeat
+   local Servers = ListServers(Next)
+   Server = Servers.data[1]
+   Next = Servers.nextPageCursor
+until Server
+TPS:TeleportToPlaceInstance(_place,Server.id,game.Players.LocalPlayer)
+end
+})
+
+
+
+
+Tab:AddButton({
+	Name = "Rejoin",
+	Callback = function()
+local ts = game:GetService("TeleportService")
+local p = game:GetService("Players").LocalPlayer
+ts:Teleport(game.PlaceId, p)
+  	end    
+})
+
+
